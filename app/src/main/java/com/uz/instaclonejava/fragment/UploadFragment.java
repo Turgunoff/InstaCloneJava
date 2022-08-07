@@ -15,7 +15,6 @@ import com.uz.instaclonejava.R;
  * This is the Upload page, where you can upload images and videos to your page
  */
 public class UploadFragment extends BaseFragment {
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
