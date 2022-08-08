@@ -12,6 +12,8 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/layout/fragment_profile.xml" value="0.209375" />
         <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/layout/fragment_search.xml" value="0.209375" />
         <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/layout/fragment_upload.xml" value="0.209375" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/layout/item_post_favorite.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/layout/item_post_home.xml" value="0.25" />
         <entry key="..\:/Users/user/AndroidStudioProjects/InstaCloneJava/app/src/main/res/menu/navigation.xml" value="0.209375" />
       </map>
     </option>
@@ -21,5 +23,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="SuppressABINotification">
+    <option name="modulesWithSuppressedNotConfigured">
+      <set>
+        <option value="Insta_Clone_Java.app" />
+      </set>
+    </option>
   </component>
 </project>
