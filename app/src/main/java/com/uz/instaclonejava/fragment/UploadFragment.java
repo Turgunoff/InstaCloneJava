@@ -1,6 +1,7 @@
 package com.uz.instaclonejava.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -66,8 +67,7 @@ public class UploadFragment extends BaseFragment {
 
     private void uploadNewPost() {
         String caption = et_caption.getText().toString().trim();
-//        if (caption.isNotEmpty() && pickedPhoto != null) {
-        if (!caption.isEmpty()) {
+        if (!caption.isEmpty() && pickedPhoto != null) {
             listener.scrollToHome();
             et_caption.getText().clear();
         }
@@ -80,7 +80,23 @@ public class UploadFragment extends BaseFragment {
                 .setMinCount(1)
                 .setSelectedImages(allPhoto)
                 .startAlbum();
-//                .startAlbumWithActivityResultCallback(photoLauncher);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FishBun.FISHBUN_REQUEST_CODE) {
+            if (data != null) {
+                allPhoto = data.getParcelableArrayListExtra(FishBun.INTENT_PATH);
+            }
+            pickedPhoto = allPhoto.get(0);
+            showPickedPhoto();
+        }
+    }
+
+    private void showPickedPhoto() {
+        fl_photo.setVisibility(View.VISIBLE);
+        iv_photo.setImageURI(pickedPhoto);
     }
 
     @Override
