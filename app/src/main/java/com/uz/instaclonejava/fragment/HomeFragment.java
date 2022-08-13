@@ -1,9 +1,11 @@
 package com.uz.instaclonejava.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends BaseFragment {
     RecyclerView recyclerView;
+    HomeListener listener;
+    ImageView iv_camera;
 
     @Nullable
     @Override
@@ -34,12 +38,35 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initViews(View view) {
+        iv_camera = view.findViewById(R.id.iv_camera);
+        iv_camera.setOnClickListener(view1 -> listener.scrollToUpload());
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         refreshAdapter();
     }
 
+    public interface HomeListener {
+        void scrollToUpload();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof HomeListener) {
+            listener = (HomeListener) context;
+        } else {
+            throw new RuntimeException("$context must implement FirstListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
     private void refreshAdapter() {
+
         ArrayList<Post> items = new ArrayList<>();
         HomeAdapter adapter = new HomeAdapter(this, items);
         recyclerView.setAdapter(adapter);

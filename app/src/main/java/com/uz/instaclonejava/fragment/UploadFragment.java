@@ -1,21 +1,23 @@
 package com.uz.instaclonejava.fragment;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
 import com.uz.instaclonejava.R;
-import com.uz.instaclonejava.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -30,8 +32,10 @@ public class UploadFragment extends BaseFragment {
     ImageView iv_photo;
     FrameLayout fl_view;
     FrameLayout fl_photo;
+    EditText et_caption;
     Uri pickedPhoto;
     ArrayList<Uri> allPhoto = new ArrayList<>();
+    UploadListener listener;
 
     @Nullable
     @Override
@@ -51,6 +55,7 @@ public class UploadFragment extends BaseFragment {
         fl_view = view.findViewById(R.id.fl_view);
         fl_photo = view.findViewById(R.id.fl_photo);
         iv_photo = view.findViewById(R.id.iv_photo);
+        et_caption = view.findViewById(R.id.et_caption);
 
         setViewHeight(fl_view);
 
@@ -60,15 +65,42 @@ public class UploadFragment extends BaseFragment {
     }
 
     private void uploadNewPost() {
+        String caption = et_caption.getText().toString().trim();
+//        if (caption.isNotEmpty() && pickedPhoto != null) {
+        if (!caption.isEmpty()) {
+            listener.scrollToHome();
+            et_caption.getText().clear();
+        }
     }
 
     private void pickFishBunPhoto() {
-        FishBun.with(UploadFragment.this)
+        FishBun.with(this)
                 .setImageAdapter(new GlideAdapter())
                 .setMaxCount(1)
                 .setMinCount(1)
-                .setSelectedImages(allPhoto);
-//                .startAlbumWithOnActivityResult(photoLauncher);
+                .setSelectedImages(allPhoto)
+                .startAlbum();
+//                .startAlbumWithActivityResultCallback(photoLauncher);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof UploadListener) {
+            listener = (UploadListener) context;
+        } else {
+            throw new RuntimeException("$context must implement FirstListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    public interface UploadListener {
+        void scrollToHome();
     }
 
     private void hidePickedPhoto() {
@@ -79,7 +111,10 @@ public class UploadFragment extends BaseFragment {
 
     private void setViewHeight(FrameLayout view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
-//        params.height = Utils.screenSize(requireActivity().getApplication());
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        params.width = displayMetrics.widthPixels;
         view.getLayoutParams();
     }
 }

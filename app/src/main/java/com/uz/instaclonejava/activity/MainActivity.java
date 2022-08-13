@@ -1,8 +1,5 @@
 package com.uz.instaclonejava.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -12,16 +9,15 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.adapter.ViewPagerAdapter;
-import com.uz.instaclonejava.fragment.FavoriteFragment;
 import com.uz.instaclonejava.fragment.HomeFragment;
-import com.uz.instaclonejava.fragment.ProfileFragment;
-import com.uz.instaclonejava.fragment.SearchFragment;
 import com.uz.instaclonejava.fragment.UploadFragment;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements UploadFragment.UploadListener, HomeFragment.HomeListener {
     BottomNavigationView bottomNavigationView;
     ViewPager viewPager;
     ViewPagerAdapter adapter;
+
+    int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,5 +88,22 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public void scrollToHome() {
+        index = 0;
+        scrollByIndex(index);
+    }
+
+    @Override
+    public void scrollToUpload() {
+        index = 2;
+        scrollByIndex(index);
+    }
+
+    private void scrollByIndex(int index) {
+        viewPager.setCurrentItem(index);
+        bottomNavigationView.getMenu().getItem(index).setChecked(true);
     }
 }
