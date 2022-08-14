@@ -8,8 +8,9 @@ import android.os.CountDownTimer;
 import android.view.WindowManager;
 
 import com.uz.instaclonejava.R;
+import com.uz.instaclonejava.manager.AuthManager;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +34,11 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
-                startActivity(intent);
-                finish();
+                if (AuthManager.isSignedIn()) {
+                    callMainActivity(context);
+                } else {
+                    callLogInActivity(context);
+                }
             }
         }.start();
     }

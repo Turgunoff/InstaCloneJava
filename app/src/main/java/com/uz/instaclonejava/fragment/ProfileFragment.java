@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -18,7 +19,9 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
 import com.uz.instaclonejava.R;
+import com.uz.instaclonejava.activity.LogInActivity;
 import com.uz.instaclonejava.adapter.ProfileAdapter;
+import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.model.Post;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 public class ProfileFragment extends BaseFragment {
     String TAG = ProfileFragment.class.toString();
     RecyclerView rv_profile;
+    ImageView logOut;
     ArrayList<Uri> allPhotos = new ArrayList<>();
     Uri pickedPhoto;
 
@@ -44,6 +48,16 @@ public class ProfileFragment extends BaseFragment {
 
     private void initViews(View view) {
         rv_profile = view.findViewById(R.id.rv_profile);
+        logOut = view.findViewById(R.id.logOut);
+
+        logOut.setOnClickListener(view12 -> {
+            AuthManager.signOut();
+            Intent intent = new Intent(getActivity(), LogInActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
+        });
+
+
         rv_profile.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         ShapeableImageView iv_profile = view.findViewById(R.id.iv_profile);
         iv_profile.setOnClickListener(view1 -> pickFishBunPhoto());
