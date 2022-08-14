@@ -103,4 +103,9 @@
     </string>
     <string name="str_write_a_caption">Write a Caption</string>
     <string name="str_upload">Upload</string>
+    <string name="str_follow">Follow</string>
+    <string name="str_posts">Posts</string>
+    <string name="str_followers">Followers</string>
+    <string name="str_following">Following</string>
+    <string name="str_profile">Profile</string>
 </resources>

@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class HomeAdapter extends BaseAdapter {
     HomeFragment fragment;
-
     ArrayList<Post> items;
 
     public HomeAdapter(HomeFragment fragment, ArrayList<Post> items) {

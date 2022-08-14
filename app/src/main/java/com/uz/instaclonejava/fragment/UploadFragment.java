@@ -128,9 +128,9 @@ public class UploadFragment extends BaseFragment {
     private void setViewHeight(FrameLayout view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = requireActivity().getWindowManager();
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        params.width = displayMetrics.widthPixels;
+        params.height = displayMetrics.widthPixels;
         view.getLayoutParams();
     }
 }
