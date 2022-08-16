@@ -8,11 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.uz.instaclonejava.R;
-import com.uz.instaclonejava.fragment.HomeFragment;
 import com.uz.instaclonejava.fragment.SearchFragment;
-import com.uz.instaclonejava.model.Post;
 import com.uz.instaclonejava.model.User;
 
 import java.util.ArrayList;
@@ -37,8 +36,12 @@ public class SearchAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         User data = items.get(position);
         if (holder instanceof UserViewHolder) {
-            ((UserViewHolder) holder).tv_fullname.setText(data.getFullName());
+            ((UserViewHolder) holder).tv_fullname.setText(data.getFullname());
             ((UserViewHolder) holder).tv_email.setText(data.getEmail());
+            Glide.with(fragment).load(data.getUserImg())
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .into(((UserViewHolder) holder).iv_profile);
         }
     }
 

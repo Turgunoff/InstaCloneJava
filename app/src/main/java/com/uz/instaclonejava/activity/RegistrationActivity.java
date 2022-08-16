@@ -11,7 +11,9 @@ import android.widget.Toast;
 
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.manager.AuthManager;
+import com.uz.instaclonejava.manager.DBManager;
 import com.uz.instaclonejava.manager.handler.AuthHandler;
+import com.uz.instaclonejava.manager.handler.DBUserHandler;
 import com.uz.instaclonejava.model.User;
 
 /**
@@ -51,16 +53,30 @@ public class RegistrationActivity extends BaseActivity {
         AuthManager.signUp(user.getEmail(), user.getPassword(), new AuthHandler() {
             @Override
             public void onSuccess(String uid) {
-                uid = user.getUid();
-                dissmisLoading();
+                user.setUid(uid);
                 Toast.makeText(context, getString(R.string.str_registration_success), Toast.LENGTH_SHORT).show();
-                callMainActivity(context);
+                storeUserToDB(user);
             }
 
             @Override
             public void onError(Exception exception) {
                 dissmisLoading();
                 Toast.makeText(context, getString(R.string.str_registration_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void storeUserToDB(User user) {
+        DBManager.storeUser(user, new DBUserHandler() {
+            @Override
+            public void onSuccess(User user) {
+                dissmisLoading();
+                callMainActivity(context);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
     }

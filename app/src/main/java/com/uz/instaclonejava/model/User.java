@@ -2,26 +2,26 @@ package com.uz.instaclonejava.model;
 
 public class User {
     String uid;
-    String fullName;
+    String fullname;
     String email;
     String password;
     String userImg;
 
-    public User(String fullName, String email, String userImg) {
-        this.fullName = fullName;
+    public User(String fullname, String email, String userImg) {
+        this.fullname = fullname;
         this.email = email;
         this.userImg = userImg;
     }
 
-    public User(String fullName, String email, String password, String userImg) {
-        this.fullName = fullName;
+    public User(String fullname, String email, String password, String userImg) {
+        this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.userImg = userImg;
     }
 
-    public User(String fullName, String email) {
-        this.fullName = fullName;
+    public User(String fullname, String email) {
+        this.fullname = fullname;
         this.email = email;
     }
 
@@ -33,12 +33,12 @@ public class User {
         this.uid = uid;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getEmail() {

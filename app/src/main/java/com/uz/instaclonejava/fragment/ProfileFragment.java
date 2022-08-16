@@ -3,18 +3,18 @@ package com.uz.instaclonejava.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
@@ -22,7 +22,12 @@ import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.activity.LogInActivity;
 import com.uz.instaclonejava.adapter.ProfileAdapter;
 import com.uz.instaclonejava.manager.AuthManager;
+import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.StorageManager;
+import com.uz.instaclonejava.manager.handler.DBUserHandler;
+import com.uz.instaclonejava.manager.handler.StorageHandler;
 import com.uz.instaclonejava.model.Post;
+import com.uz.instaclonejava.model.User;
 
 import java.util.ArrayList;
 
@@ -35,6 +40,9 @@ public class ProfileFragment extends BaseFragment {
     ImageView logOut;
     ArrayList<Uri> allPhotos = new ArrayList<>();
     Uri pickedPhoto;
+    ImageView iv_profile;
+    TextView tv_fullname;
+    TextView tv_email;
 
     @Nullable
     @Override
@@ -49,6 +57,9 @@ public class ProfileFragment extends BaseFragment {
     private void initViews(View view) {
         rv_profile = view.findViewById(R.id.rv_profile);
         logOut = view.findViewById(R.id.logOut);
+        iv_profile = view.findViewById(R.id.iv_profile);
+        tv_fullname = view.findViewById(R.id.tv_fullname);
+        tv_email = view.findViewById(R.id.tv_email);
 
         logOut.setOnClickListener(view12 -> {
             AuthManager.signOut();
@@ -62,6 +73,33 @@ public class ProfileFragment extends BaseFragment {
         ShapeableImageView iv_profile = view.findViewById(R.id.iv_profile);
         iv_profile.setOnClickListener(view1 -> pickFishBunPhoto());
         refreshAdapter(loadPosts());
+        loadUserInfo();
+    }
+
+    private void loadUserInfo() {
+        DBManager.loadUser(AuthManager.currentUser().getUid(), new DBUserHandler() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    showUserInfo(user);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void showUserInfo(User user) {
+        tv_fullname.setText(user.getFullname());
+        tv_email.setText(user.getEmail());
+
+        Glide.with(this).load(user.getUserImg())
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .into(iv_profile);
     }
 
     private ArrayList<Post> loadPosts() {
@@ -94,14 +132,26 @@ public class ProfileFragment extends BaseFragment {
                 allPhotos = data.getParcelableArrayListExtra(FishBun.INTENT_PATH);
             }
             pickedPhoto = allPhotos.get(0);
-            showPickedPhoto();
+            uploadUserPhoto();
         }
     }
 
-    private void showPickedPhoto() {
-        if (pickedPhoto != null) {
-            Log.d(TAG, pickedPhoto.getPath());
-        }
+    private void uploadUserPhoto() {
+        if (pickedPhoto == null) return;
+
+        StorageManager.uploadUserPhoto(pickedPhoto, new StorageHandler() {
+            @Override
+            public void onSuccess(String imgUrl) {
+                DBManager.updateUserImg(imgUrl);
+                iv_profile.setImageURI(pickedPhoto);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
     }
 
     private void refreshAdapter(ArrayList<Post> items) {

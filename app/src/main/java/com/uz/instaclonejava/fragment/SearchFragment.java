@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.adapter.SearchAdapter;
+import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.handler.DBUsersHandler;
 import com.uz.instaclonejava.model.User;
 
 import java.util.ArrayList;
@@ -58,36 +60,24 @@ public class SearchFragment extends BaseFragment {
 
             }
         });
-        refreshAdapter(loadUsers());
+
+        loadUsers();
     }
 
-    private ArrayList<User> loadUsers() {
-        items = new ArrayList<User>();
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        items.add(new User("Eldor", "eldor@gmail.com"));
-        items.add(new User("Farrux", "eldor@gmail.com"));
-        items.add(new User("Shoxrux", "eldor@gmail.com"));
-        items.add(new User("Elyor", "eldor@gmail.com"));
-        return items;
+    private void loadUsers() {
+        DBManager.loadUsers(new DBUsersHandler() {
+            @Override
+            public void onSuccess(ArrayList<User> users) {
+                items.clear();
+                items.addAll(users);
+                refreshAdapter(items);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void usersByKeyword(String keyword) {
@@ -95,7 +85,7 @@ public class SearchFragment extends BaseFragment {
             refreshAdapter(items);
         users.clear();
         for (User user : items)
-            if (user.getFullName().toLowerCase().startsWith(keyword.toLowerCase()))
+            if (user.getFullname().toLowerCase().startsWith(keyword.toLowerCase()))
                 users.add(user);
 
         refreshAdapter(users);
