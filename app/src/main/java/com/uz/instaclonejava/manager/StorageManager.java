@@ -24,7 +24,7 @@ public class StorageManager {
     private final static FirebaseStorage storage = FirebaseStorage.getInstance();
     private final static StorageReference storageRef = storage.getReference();
 
-    void uploadPostPhoto(Uri uri, StorageHandler handler) {
+    public static void uploadPostPhoto(Uri uri, StorageHandler handler) {
 
     }
 

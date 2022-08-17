@@ -35,7 +35,7 @@ public class ProfileAdapter extends BaseAdapter {
         Post post = items.get(position);
         if (holder instanceof PostViewHolder) {
             setViewHeight(((PostViewHolder) holder).iv_post);
-            Glide.with(fragment).load(post.getImage()).into(((PostViewHolder) holder).iv_post);
+            Glide.with(fragment).load(post.getPostImg()).into(((PostViewHolder) holder).iv_post);
         }
     }
 

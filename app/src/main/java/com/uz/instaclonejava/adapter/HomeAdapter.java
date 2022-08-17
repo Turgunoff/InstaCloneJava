@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +38,12 @@ public class HomeAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post data = items.get(position);
         if (holder instanceof PostViewHolder) {
-            Glide.with(fragment).load(data.getImage()).into(((PostViewHolder) holder).iv_post);
+            ((PostViewHolder) holder).tv_fullname.setText(data.getFullname());
+            ((PostViewHolder) holder).tv_caption.setText(data.getCaption());
+            ((PostViewHolder) holder).tv_time.setText(data.getCurrentDate());
+            Glide.with(fragment).load(data.getUserImg()).placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person).into(((PostViewHolder) holder).iv_profile);
+            Glide.with(fragment).load(data.getPostImg()).into(((PostViewHolder) holder).iv_post);
         }
     }
 
@@ -47,10 +54,24 @@ public class HomeAdapter extends BaseAdapter {
 
     private static class PostViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView iv_post;
+        ShapeableImageView iv_profile;
+        TextView tv_fullname;
+        TextView tv_time;
+        TextView tv_caption;
+        ImageView iv_more;
+        ImageView iv_like;
+        ImageView iv_share;
 
         public PostViewHolder(View view) {
             super(view);
             iv_post = view.findViewById(R.id.iv_post);
+            iv_profile = view.findViewById(R.id.iv_profile);
+            tv_fullname = view.findViewById(R.id.tv_fullname);
+            tv_time = view.findViewById(R.id.tv_time);
+            tv_caption = view.findViewById(R.id.tv_caption);
+            iv_more = view.findViewById(R.id.iv_more);
+            iv_like = view.findViewById(R.id.iv_like);
+            iv_share = view.findViewById(R.id.iv_share);
         }
     }
 }

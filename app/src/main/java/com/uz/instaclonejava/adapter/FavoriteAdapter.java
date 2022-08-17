@@ -37,7 +37,7 @@ public class FavoriteAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post data = items.get(position);
         if (holder instanceof PostViewHolder) {
-            Glide.with(fragment).load(data.getImage()).into(((PostViewHolder) holder).iv_post);
+            Glide.with(fragment).load(data.getPostImg()).into(((PostViewHolder) holder).iv_post);
         }
     }
 

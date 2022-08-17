@@ -24,6 +24,7 @@ import com.uz.instaclonejava.adapter.ProfileAdapter;
 import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.manager.DBManager;
 import com.uz.instaclonejava.manager.StorageManager;
+import com.uz.instaclonejava.manager.handler.DBPostsHandler;
 import com.uz.instaclonejava.manager.handler.DBUserHandler;
 import com.uz.instaclonejava.manager.handler.StorageHandler;
 import com.uz.instaclonejava.model.Post;
@@ -43,6 +44,7 @@ public class ProfileFragment extends BaseFragment {
     ImageView iv_profile;
     TextView tv_fullname;
     TextView tv_email;
+    TextView tv_posts;
 
     @Nullable
     @Override
@@ -60,6 +62,7 @@ public class ProfileFragment extends BaseFragment {
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_fullname = view.findViewById(R.id.tv_fullname);
         tv_email = view.findViewById(R.id.tv_email);
+        tv_posts = view.findViewById(R.id.tv_posts);
 
         logOut.setOnClickListener(view12 -> {
             AuthManager.signOut();
@@ -72,8 +75,25 @@ public class ProfileFragment extends BaseFragment {
         rv_profile.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         ShapeableImageView iv_profile = view.findViewById(R.id.iv_profile);
         iv_profile.setOnClickListener(view1 -> pickFishBunPhoto());
-        refreshAdapter(loadPosts());
+
         loadUserInfo();
+        loadMyPosts();
+    }
+
+    private void loadMyPosts() {
+        String uid = AuthManager.currentUser().getUid();
+        DBManager.loadPosts(uid, new DBPostsHandler() {
+            @Override
+            public void onSuccess(ArrayList<Post> post) {
+                tv_posts.setText(String.valueOf(post.size()));
+                refreshAdapter(post);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void loadUserInfo() {
@@ -100,19 +120,6 @@ public class ProfileFragment extends BaseFragment {
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .into(iv_profile);
-    }
-
-    private ArrayList<Post> loadPosts() {
-        ArrayList<Post> items = new ArrayList<>();
-        items.add(new Post("https://images.unsplash.com/photo-1659519529276-a6a42aaa0b7b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfENEd3V3WEpBYkV3fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1659259541374-22a6df2fee1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDIxfENEd3V3WEpBYkV3fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1492681290082-e932832941e6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHBlcnNvbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1659519529276-a6a42aaa0b7b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfENEd3V3WEpBYkV3fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1659259541374-22a6df2fee1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDIxfENEd3V3WEpBYkV3fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        items.add(new Post("https://images.unsplash.com/photo-1492681290082-e932832941e6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHBlcnNvbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"));
-        return items;
     }
 
     private void pickFishBunPhoto() {

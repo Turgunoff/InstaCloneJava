@@ -19,8 +19,18 @@ import androidx.annotation.Nullable;
 import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
 import com.uz.instaclonejava.R;
+import com.uz.instaclonejava.manager.AuthManager;
+import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.StorageManager;
+import com.uz.instaclonejava.manager.handler.DBPostHandler;
+import com.uz.instaclonejava.manager.handler.DBUserHandler;
+import com.uz.instaclonejava.manager.handler.StorageHandler;
+import com.uz.instaclonejava.model.Post;
+import com.uz.instaclonejava.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This is the Upload page, where you can upload images and videos to your page
@@ -68,8 +78,7 @@ public class UploadFragment extends BaseFragment {
     private void uploadNewPost() {
         String caption = et_caption.getText().toString().trim();
         if (!caption.isEmpty() && pickedPhoto != null) {
-            listener.scrollToHome();
-            et_caption.getText().clear();
+            uploadPostPhoto(caption,pickedPhoto);
         }
     }
 
@@ -132,5 +141,80 @@ public class UploadFragment extends BaseFragment {
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         params.height = displayMetrics.widthPixels;
         view.getLayoutParams();
+    }
+
+    public String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy hh:mm");
+        return sdf.format(new Date());
+    }
+
+    private void uploadPostPhoto(String caption, Uri pickedPhoto) {
+        showLoading(requireActivity());
+        StorageManager.uploadPostPhoto(pickedPhoto, new StorageHandler() {
+            @Override
+            public void onSuccess(String imgUrl) {
+                Post post = new Post(caption, imgUrl);
+                post.setCurrentDate(getCurrentTime());
+                String uid = AuthManager.currentUser().getUid();
+                DBManager.loadUser(uid, new DBUserHandler() {
+                    @Override
+                    public void onSuccess(User user) {
+                        post.setUid(uid);
+                        post.setFullname(user.getFullname());
+                        post.setUserImg(user.getUserImg());
+                        storePostToDB(post);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+    }
+
+    private void storePostToDB(Post post) {
+        DBManager.storePosts(post, new DBPostHandler() {
+            @Override
+            public void onSuccess(Post post) {
+                storeFeedToDB(post);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void storeFeedToDB(Post post) {
+        DBManager.storeFeeds(post, new DBPostHandler() {
+            @Override
+            public void onSuccess(Post post) {
+                dissmisLoading();
+                resetAll();
+                listener.scrollToHome();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void resetAll() {
+        allPhoto.clear();
+        et_caption.getText().clear();
+        pickedPhoto = null;
+        fl_photo.setVisibility(View.GONE);
     }
 }
