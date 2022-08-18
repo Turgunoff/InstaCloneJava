@@ -19,13 +19,21 @@ import com.uz.instaclonejava.manager.handler.StorageHandler;
  */
 public class StorageManager {
     private static final String USER_PHOTO_PATH = "users";
-    private final String POST_PHOTO_PATH = "posts";
+    private static final String POST_PHOTO_PATH = "posts";
 
     private final static FirebaseStorage storage = FirebaseStorage.getInstance();
     private final static StorageReference storageRef = storage.getReference();
 
     public static void uploadPostPhoto(Uri uri, StorageHandler handler) {
-
+        String filename = AuthManager.currentUser().getUid() + "_" + System.currentTimeMillis() + ".png";
+        UploadTask uploadTask = storageRef.child(POST_PHOTO_PATH).child(filename).putFile(uri);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+            result.addOnSuccessListener(uri1 -> {
+                String imgUrl = uri1.toString();
+                handler.onSuccess(imgUrl);
+            }).addOnFailureListener(e -> handler.onError(e));
+        }).addOnFailureListener(e -> handler.onError(e));
     }
 
     public static void uploadUserPhoto(Uri uri, StorageHandler handler) {

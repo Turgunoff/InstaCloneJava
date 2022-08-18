@@ -1,5 +1,6 @@
 package com.uz.instaclonejava.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -144,7 +145,7 @@ public class UploadFragment extends BaseFragment {
     }
 
     public String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy hh:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy hh:mm");
         return sdf.format(new Date());
     }
 
@@ -199,7 +200,7 @@ public class UploadFragment extends BaseFragment {
         DBManager.storeFeeds(post, new DBPostHandler() {
             @Override
             public void onSuccess(Post post) {
-                dissmisLoading();
+                dismissLoading();
                 resetAll();
                 listener.scrollToHome();
             }

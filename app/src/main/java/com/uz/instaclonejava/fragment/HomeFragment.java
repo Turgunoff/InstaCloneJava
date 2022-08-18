@@ -55,7 +55,7 @@ public class HomeFragment extends BaseFragment {
         DBManager.loadFeeds(uid, new DBPostsHandler() {
             @Override
             public void onSuccess(ArrayList<Post> post) {
-                dissmisLoading();
+                dismissLoading();
                 feeds.clear();
                 feeds.addAll(post);
                 refreshAdapter(feeds);

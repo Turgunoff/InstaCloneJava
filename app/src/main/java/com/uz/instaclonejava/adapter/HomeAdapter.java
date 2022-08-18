@@ -35,6 +35,11 @@ public class HomeAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post data = items.get(position);
         if (holder instanceof PostViewHolder) {
@@ -47,14 +52,9 @@ public class HomeAdapter extends BaseAdapter {
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
     private static class PostViewHolder extends RecyclerView.ViewHolder {
-        ShapeableImageView iv_post;
         ShapeableImageView iv_profile;
+        ShapeableImageView iv_post;
         TextView tv_fullname;
         TextView tv_time;
         TextView tv_caption;

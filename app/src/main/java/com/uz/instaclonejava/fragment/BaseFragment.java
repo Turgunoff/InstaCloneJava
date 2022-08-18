@@ -1,15 +1,12 @@
 package com.uz.instaclonejava.fragment;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.uz.instaclonejava.R;
-import com.uz.instaclonejava.activity.LogInActivity;
 
 public class BaseFragment extends Fragment {
 
@@ -29,7 +26,7 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void dissmisLoading() {
+    protected void dismissLoading() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
@@ -38,6 +35,6 @@ public class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dissmisLoading();
+        dismissLoading();
     }
 }

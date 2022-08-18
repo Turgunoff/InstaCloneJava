@@ -23,11 +23,17 @@ import java.util.ArrayList;
 public class ProfileAdapter extends BaseAdapter {
     ProfileFragment fragment;
     ArrayList<Post> items;
-    Context context;
 
     public ProfileAdapter(ProfileFragment fragment, ArrayList<Post> items) {
         this.fragment = fragment;
         this.items = items;
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_profile, parent, false);
+        return new PostViewHolder(view);
     }
 
     @Override
@@ -37,13 +43,6 @@ public class ProfileAdapter extends BaseAdapter {
             setViewHeight(((PostViewHolder) holder).iv_post);
             Glide.with(fragment).load(post.getPostImg()).into(((PostViewHolder) holder).iv_post);
         }
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_profile, parent, false);
-        return new PostViewHolder(view);
     }
 
     @Override
