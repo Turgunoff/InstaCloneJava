@@ -1,5 +1,6 @@
 package com.uz.instaclonejava.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,28 @@ public class SearchAdapter extends BaseAdapter {
                     .placeholder(R.drawable.ic_person)
                     .error(R.drawable.ic_person)
                     .into(((UserViewHolder) holder).iv_profile);
+            ((UserViewHolder) holder).tv_follow.setOnClickListener(view -> {
+                if (data.getFollowed()) {
+                    ((UserViewHolder) holder).tv_follow.setText(R.string.str_following);
+                    ((UserViewHolder) holder).tv_follow.setTextColor(Color.BLACK);
+                    ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.following_click);
+                } else {
+                    ((UserViewHolder) holder).tv_follow.setText(R.string.str_follow);
+                    ((UserViewHolder) holder).tv_follow.setTextColor(Color.WHITE);
+                    ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.textview_rounder_corners);
+                }
+                fragment.followOrUnFollow(data);
+            });
+            if (data.getFollowed()){
+                ((UserViewHolder) holder).tv_follow.setText(R.string.str_follow);
+                ((UserViewHolder) holder).tv_follow.setTextColor(Color.WHITE);
+                ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.textview_rounder_corners);
+            }else{
+                ((UserViewHolder) holder).tv_follow.setText(R.string.str_following);
+                ((UserViewHolder) holder).tv_follow.setTextColor(Color.BLACK);
+                ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.following_click);
+            }
+
         }
     }
 

@@ -6,6 +6,15 @@ public class User {
     String email;
     String password;
     String userImg;
+    Boolean isFollowed = false;
+
+    public Boolean getFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(Boolean followed) {
+        isFollowed = followed;
+    }
 
     public User(String fullname, String email, String userImg) {
         this.fullname = fullname;
