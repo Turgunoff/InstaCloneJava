@@ -40,6 +40,7 @@ public class ProfileAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post post = items.get(position);
         if (holder instanceof PostViewHolder) {
+            ((PostViewHolder) holder).tv_caption.setText(post.getCaption());
             setViewHeight(((PostViewHolder) holder).iv_post);
             Glide.with(fragment).load(post.getPostImg()).into(((PostViewHolder) holder).iv_post);
         }

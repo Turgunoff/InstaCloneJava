@@ -141,11 +141,11 @@ public class SearchFragment extends BaseFragment {
         DBManager.loadUser(uid, new DBUserHandler() {
             @Override
             public void onSuccess(User me) {
-                DBManager.followUser(me, to, new DBFollowHandler() {
+                DBManager.unFollowUser(me, to, new DBFollowHandler() {
                     @Override
                     public void onSuccess(Boolean isDone) {
                         to.setFollowed(false);
-                        DBManager.storePostsToMyFeed(uid, to);
+                        DBManager.removePostsFromMyFeed(uid, to);
                     }
 
                     @Override

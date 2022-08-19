@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public interface DBPostsHandler {
 
-    public void onSuccess(ArrayList<Post> post);
+    public void onSuccess(ArrayList<Post> posts);
 
     public void onError(Exception e);
 }

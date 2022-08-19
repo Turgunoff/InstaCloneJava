@@ -44,7 +44,7 @@ public class SearchAdapter extends BaseAdapter {
                     .error(R.drawable.ic_person)
                     .into(((UserViewHolder) holder).iv_profile);
             ((UserViewHolder) holder).tv_follow.setOnClickListener(view -> {
-                if (data.getFollowed()) {
+                if (!data.getFollowed()) {
                     ((UserViewHolder) holder).tv_follow.setText(R.string.str_following);
                     ((UserViewHolder) holder).tv_follow.setTextColor(Color.BLACK);
                     ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.following_click);
@@ -55,7 +55,7 @@ public class SearchAdapter extends BaseAdapter {
                 }
                 fragment.followOrUnFollow(data);
             });
-            if (data.getFollowed()){
+            if (!data.getFollowed()){
                 ((UserViewHolder) holder).tv_follow.setText(R.string.str_follow);
                 ((UserViewHolder) holder).tv_follow.setTextColor(Color.WHITE);
                 ((UserViewHolder) holder).tv_follow.setBackgroundResource(R.drawable.textview_rounder_corners);

@@ -26,6 +26,7 @@ import com.uz.instaclonejava.manager.DBManager;
 import com.uz.instaclonejava.manager.StorageManager;
 import com.uz.instaclonejava.manager.handler.DBPostsHandler;
 import com.uz.instaclonejava.manager.handler.DBUserHandler;
+import com.uz.instaclonejava.manager.handler.DBUsersHandler;
 import com.uz.instaclonejava.manager.handler.StorageHandler;
 import com.uz.instaclonejava.model.Post;
 import com.uz.instaclonejava.model.User;
@@ -45,6 +46,8 @@ public class ProfileFragment extends BaseFragment {
     TextView tv_fullname;
     TextView tv_email;
     TextView tv_posts;
+    TextView tv_following;
+    TextView tv_followers;
 
     @Nullable
     @Override
@@ -63,6 +66,8 @@ public class ProfileFragment extends BaseFragment {
         tv_fullname = view.findViewById(R.id.tv_fullname);
         tv_email = view.findViewById(R.id.tv_email);
         tv_posts = view.findViewById(R.id.tv_posts);
+        tv_following = view.findViewById(R.id.tv_following);
+        tv_followers = view.findViewById(R.id.tv_followers);
 
         logOut.setOnClickListener(view12 -> {
             AuthManager.signOut();
@@ -78,15 +83,47 @@ public class ProfileFragment extends BaseFragment {
 
         loadUserInfo();
         loadMyPosts();
+        loadMyFollowing();
+        loadMyFollowers();
+    }
+
+    private void loadMyFollowing() {
+        String uid = AuthManager.currentUser().getUid();
+        DBManager.loadFollowing(uid, new DBUsersHandler() {
+            @Override
+            public void onSuccess(ArrayList<User> users) {
+                tv_following.setText(String.valueOf(users.size()));
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void loadMyFollowers() {
+        String uid = AuthManager.currentUser().getUid();
+        DBManager.loadFollowers(uid, new DBUsersHandler() {
+            @Override
+            public void onSuccess(ArrayList<User> users) {
+                tv_followers.setText(String.valueOf(users.size()));
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void loadMyPosts() {
         String uid = AuthManager.currentUser().getUid();
         DBManager.loadPosts(uid, new DBPostsHandler() {
             @Override
-            public void onSuccess(ArrayList<Post> post) {
-                tv_posts.setText(String.valueOf(post.size()));
-                refreshAdapter(post);
+            public void onSuccess(ArrayList<Post> posts) {
+                tv_posts.setText(String.valueOf(posts.size()));
+                refreshAdapter(posts);
             }
 
             @Override

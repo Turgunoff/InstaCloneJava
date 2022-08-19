@@ -54,10 +54,10 @@ public class HomeFragment extends BaseFragment {
         String uid = AuthManager.currentUser().getUid();
         DBManager.loadFeeds(uid, new DBPostsHandler() {
             @Override
-            public void onSuccess(ArrayList<Post> post) {
+            public void onSuccess(ArrayList<Post> posts) {
                 dismissLoading();
                 feeds.clear();
-                feeds.addAll(post);
+                feeds.addAll(posts);
                 refreshAdapter(feeds);
             }
 
