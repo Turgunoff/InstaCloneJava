@@ -15,11 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.adapter.SearchAdapter;
+import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.handler.DBFollowHandler;
+import com.uz.instaclonejava.manager.handler.DBUserHandler;
 import com.uz.instaclonejava.manager.handler.DBUsersHandler;
 import com.uz.instaclonejava.model.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * This is the Search page, where you can search
@@ -65,12 +69,23 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void loadUsers() {
+        String uid = AuthManager.currentUser().getUid();
         DBManager.loadUsers(new DBUsersHandler() {
             @Override
             public void onSuccess(ArrayList<User> users) {
-                items.clear();
-                items.addAll(users);
-                refreshAdapter(items);
+                DBManager.loadFollowing(uid, new DBUsersHandler() {
+                    @Override
+                    public void onSuccess(ArrayList<User> following) {
+                        items.clear();
+                        items.addAll(mergedUsers(uid, users, following));
+                        refreshAdapter(items);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
             }
 
             @Override
@@ -78,6 +93,22 @@ public class SearchFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private Collection<? extends User> mergedUsers(String uid, ArrayList<User> users, ArrayList<User> following) {
+        ArrayList<User> items = new ArrayList<>();
+        for (User u : users) {
+            for (User f : following) {
+                if (u.getUid().equals(f.getUid())) {
+                    u.setFollowed(true);
+                    break;
+                }
+            }
+            if (!uid.equals(u.getUid())) {
+                items.add(u);
+            }
+        }
+        return items;
     }
 
     private void usersByKeyword(String keyword) {
@@ -95,5 +126,64 @@ public class SearchFragment extends BaseFragment {
     private void refreshAdapter(ArrayList<User> items) {
         SearchAdapter adapter = new SearchAdapter(this, items);
         rv_search.setAdapter(adapter);
+    }
+
+    public void followOrUnFollow(User to) {
+        String uid = AuthManager.currentUser().getUid();
+        if (!to.getFollowed()) {
+            followUser(uid, to);
+        } else {
+            unFollowUser(uid, to);
+        }
+    }
+
+    private void unFollowUser(String uid, User to) {
+        DBManager.loadUser(uid, new DBUserHandler() {
+            @Override
+            public void onSuccess(User me) {
+                DBManager.unFollowUser(me, to, new DBFollowHandler() {
+                    @Override
+                    public void onSuccess(Boolean isDone) {
+                        to.setFollowed(false);
+                        DBManager.removePostsFromMyFeed(uid, to);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void followUser(String uid, User to) {
+        DBManager.loadUser(uid, new DBUserHandler() {
+            @Override
+            public void onSuccess(User me) {
+                DBManager.followUser(me, to, new DBFollowHandler() {
+                    @Override
+                    public void onSuccess(Boolean isDone) {
+                        to.setFollowed(true);
+                        DBManager.storePostsToMyFeed(uid, to);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 }
