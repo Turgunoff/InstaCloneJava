@@ -46,6 +46,22 @@ public class HomeAdapter extends BaseAdapter {
             ((PostViewHolder) holder).tv_fullname.setText(data.getFullname());
             ((PostViewHolder) holder).tv_caption.setText(data.getCaption());
             ((PostViewHolder) holder).tv_time.setText(data.getCurrentDate());
+            ((PostViewHolder) holder).iv_like.setOnClickListener(view -> {
+                if (data.isLiked()) {
+                    data.setLiked(false);
+                    ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite);
+                } else {
+                    data.setLiked(true);
+                    ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite_like);
+                }
+                fragment.likeOrUnlikePost(data);
+            });
+            if (data.isLiked()){
+                ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite_like);
+            }else{
+                ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite);
+            }
+
             Glide.with(fragment).load(data.getUserImg()).placeholder(R.drawable.ic_person)
                     .error(R.drawable.ic_person).into(((PostViewHolder) holder).iv_profile);
             Glide.with(fragment).load(data.getPostImg()).into(((PostViewHolder) holder).iv_post);

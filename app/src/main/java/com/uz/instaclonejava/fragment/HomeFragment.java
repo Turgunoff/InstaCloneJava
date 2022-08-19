@@ -73,6 +73,11 @@ public class HomeFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
+    public void likeOrUnlikePost(Post data) {
+        String uid = AuthManager.currentUser().getUid();
+        DBManager.likeFeedPost(uid, data);
+    }
+
     public interface HomeListener {
         void scrollToUpload();
     }

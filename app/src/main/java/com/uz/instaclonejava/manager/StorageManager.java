@@ -32,8 +32,8 @@ public class StorageManager {
             result.addOnSuccessListener(uri1 -> {
                 String imgUrl = uri1.toString();
                 handler.onSuccess(imgUrl);
-            }).addOnFailureListener(e -> handler.onError(e));
-        }).addOnFailureListener(e -> handler.onError(e));
+            }).addOnFailureListener(handler::onError);
+        }).addOnFailureListener(handler::onError);
     }
 
     public static void uploadUserPhoto(Uri uri, StorageHandler handler) {
