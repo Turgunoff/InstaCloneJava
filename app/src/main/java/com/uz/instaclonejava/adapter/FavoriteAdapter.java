@@ -3,6 +3,8 @@ package com.uz.instaclonejava.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +14,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.fragment.FavoriteFragment;
 import com.uz.instaclonejava.fragment.HomeFragment;
+import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.model.Post;
 
 import java.util.ArrayList;
@@ -37,7 +40,31 @@ public class FavoriteAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post data = items.get(position);
         if (holder instanceof PostViewHolder) {
+            ((PostViewHolder) holder).tv_fullname.setText(data.getFullname());
+            ((PostViewHolder) holder).tv_caption.setText(data.getCaption());
+            ((PostViewHolder) holder).tv_time.setText(data.getCurrentDate());
+            Glide.with(fragment).load(data.getUserImg()).placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person).into(((PostViewHolder) holder).iv_profile);
             Glide.with(fragment).load(data.getPostImg()).into(((PostViewHolder) holder).iv_post);
+            ((PostViewHolder) holder).iv_like.setOnClickListener(view -> {
+                if (data.isLiked()) {
+                    data.setLiked(false);
+                    ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite);
+                } else {
+                    data.setLiked(true);
+                    ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite_like);
+                }
+                fragment.likeOrUnlikePost(data);
+            });
+            String uid = AuthManager.currentUser().getUid();
+            if (uid.equals(data.getUid())) {
+                ((PostViewHolder) holder).iv_more.setVisibility(View.VISIBLE);
+            } else {
+                ((PostViewHolder) holder).iv_more.setVisibility(View.GONE);
+            }
+            ((PostViewHolder) holder).iv_more.setOnClickListener(view ->
+                    fragment.showDeleteDialog(data)
+            );
         }
     }
 
@@ -47,11 +74,25 @@ public class FavoriteAdapter extends BaseAdapter {
     }
 
     private static class PostViewHolder extends RecyclerView.ViewHolder {
+        ShapeableImageView iv_profile;
         ShapeableImageView iv_post;
+        TextView tv_fullname;
+        TextView tv_time;
+        TextView tv_caption;
+        ImageView iv_more;
+        ImageView iv_like;
+        ImageView iv_share;
 
         public PostViewHolder(View view) {
             super(view);
+            iv_profile = view.findViewById(R.id.iv_profile);
             iv_post = view.findViewById(R.id.iv_post);
+            tv_fullname = view.findViewById(R.id.tv_fullname);
+            tv_time = view.findViewById(R.id.tv_time);
+            tv_caption = view.findViewById(R.id.tv_caption);
+            iv_more = view.findViewById(R.id.iv_more);
+            iv_like = view.findViewById(R.id.iv_like);
+            iv_share = view.findViewById(R.id.iv_share);
         }
     }
 }

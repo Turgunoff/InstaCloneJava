@@ -1,8 +1,11 @@
 package com.uz.instaclonejava.activity;
 
+import static com.uz.instaclonejava.manager.PrefsManager.loadDeviceToken;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,9 +15,11 @@ import android.widget.Toast;
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.PrefsManager;
 import com.uz.instaclonejava.manager.handler.AuthHandler;
 import com.uz.instaclonejava.manager.handler.DBUserHandler;
 import com.uz.instaclonejava.model.User;
+import com.uz.instaclonejava.utils.Utils;
 
 /**
  * This is the Registration page. Here you can register using FullName, Email and Password
@@ -67,6 +72,8 @@ public class RegistrationActivity extends BaseActivity {
     }
 
     private void storeUserToDB(User user) {
+        user.setDevice_toke(new PrefsManager(this), loadDeviceToken());
+        user.setDevice_id(Utils.getDeviceID(this));
         DBManager.storeUser(user, new DBUserHandler() {
             @Override
             public void onSuccess(User user) {

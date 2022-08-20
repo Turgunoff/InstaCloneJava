@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.fragment.HomeFragment;
+import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.model.Post;
 
 import java.util.ArrayList;
@@ -56,15 +57,22 @@ public class HomeAdapter extends BaseAdapter {
                 }
                 fragment.likeOrUnlikePost(data);
             });
-            if (data.isLiked()){
+            if (data.isLiked()) {
                 ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite_like);
-            }else{
+            } else {
                 ((PostViewHolder) holder).iv_like.setImageResource(R.mipmap.ic_favorite);
             }
 
             Glide.with(fragment).load(data.getUserImg()).placeholder(R.drawable.ic_person)
                     .error(R.drawable.ic_person).into(((PostViewHolder) holder).iv_profile);
             Glide.with(fragment).load(data.getPostImg()).into(((PostViewHolder) holder).iv_post);
+            String uid = AuthManager.currentUser().getUid();
+            if (uid.equals(data.getUid())) {
+                ((PostViewHolder) holder).iv_more.setVisibility(View.VISIBLE);
+            } else {
+                ((PostViewHolder) holder).iv_more.setVisibility(View.GONE);
+            }
+            ((PostViewHolder) holder).iv_more.setOnClickListener(view -> fragment.showDeleteDialog(data));
         }
     }
 

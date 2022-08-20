@@ -1,5 +1,7 @@
 package com.uz.instaclonejava.model;
 
+import com.uz.instaclonejava.manager.PrefsManager;
+
 public class User {
     String uid;
     String fullname;
@@ -7,6 +9,34 @@ public class User {
     String password;
     String userImg;
     Boolean isFollowed = false;
+
+    String device_id;
+    String device_type = "Android";
+    String device_token;
+
+    public String getDevice_id() {
+        return device_id;
+    }
+
+    public void setDevice_id(String device_id) {
+        this.device_id = device_id;
+    }
+
+    public String getDevice_type() {
+        return device_type;
+    }
+
+    public void setDevice_type(String device_type) {
+        this.device_type = device_type;
+    }
+
+    public String getDevice_token() {
+        return device_token;
+    }
+
+    public void setDevice_toke(PrefsManager prefsManager, String device_toke) {
+        this.device_token = device_toke;
+    }
 
     public Boolean getFollowed() {
         return isFollowed;

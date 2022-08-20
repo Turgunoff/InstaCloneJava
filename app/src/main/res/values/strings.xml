@@ -117,4 +117,7 @@
     <string name="str_already_have_an_account">Already have an account?</string>
     <string name="str_registration_failed">Registration failed</string>
     <string name="str_registration_success">Registration Success</string>
+    <string name="str_confirm">Confirm</string>
+    <string name="str_cencal">Cencal</string>
+    <string name="str_detele_post">Delete post</string>
 </resources>

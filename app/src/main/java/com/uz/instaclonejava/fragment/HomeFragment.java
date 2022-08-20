@@ -16,8 +16,10 @@ import com.uz.instaclonejava.R;
 import com.uz.instaclonejava.adapter.HomeAdapter;
 import com.uz.instaclonejava.manager.AuthManager;
 import com.uz.instaclonejava.manager.DBManager;
+import com.uz.instaclonejava.manager.handler.DBPostHandler;
 import com.uz.instaclonejava.manager.handler.DBPostsHandler;
 import com.uz.instaclonejava.model.Post;
+import com.uz.instaclonejava.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -76,6 +78,27 @@ public class HomeFragment extends BaseFragment {
     public void likeOrUnlikePost(Post data) {
         String uid = AuthManager.currentUser().getUid();
         DBManager.likeFeedPost(uid, data);
+    }
+
+    public void showDeleteDialog(Post data) {
+        Utils.dialogDouble(requireContext(), getString(R.string.str_detele_post), isChosen -> {
+            if (isChosen)
+                deletePost(data);
+        });
+    }
+
+    private void deletePost(Post data) {
+        DBManager.deletePost(data, new DBPostHandler() {
+            @Override
+            public void onSuccess(Post post) {
+                loadMyFeeds();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     public interface HomeListener {

@@ -2,14 +2,12 @@ package com.uz.instaclonejava.manager;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.uz.instaclonejava.manager.handler.DBFollowHandler;
 import com.uz.instaclonejava.manager.handler.DBPostHandler;
 import com.uz.instaclonejava.manager.handler.DBPostsHandler;
@@ -182,6 +180,8 @@ public class DBManager {
                     String fullname = document.getString("fullname");
                     String userImg = document.getString("userImg");
                     String currentDate = document.getString("currentDate");
+                    Boolean isLiked = document.getBoolean("isLiked");
+                    if (isLiked == null) isLiked = false;
                     String userId = document.getString("uid");
 
                     Post post = new Post(id, caption, postImg);
@@ -189,6 +189,7 @@ public class DBManager {
                     post.setFullname(fullname);
                     post.setUserImg(userImg);
                     post.setCurrentDate(currentDate);
+                    post.setLiked(isLiked);
                     posts.add(post);
                 }
                 handler.onSuccess(posts);
@@ -210,12 +211,16 @@ public class DBManager {
                     String fullname = document.getString("fullname");
                     String userImg = document.getString("userImg");
                     String currentDate = document.getString("currentDate");
+                    Boolean isLiked = document.getBoolean("isLiked");
+                    if (isLiked == null) isLiked = false;
+                    String userId = document.getString("uid");
 
                     Post post = new Post(id, caption, postImg);
-                    post.setUid(uid);
+                    post.setUid(userId);
                     post.setFullname(fullname);
                     post.setUserImg(userImg);
                     post.setCurrentDate(currentDate);
+                    post.setLiked(isLiked);
                     posts.add(post);
                 }
                 handler.onSuccess(posts);
@@ -268,5 +273,56 @@ public class DBManager {
         reference.document(post.getId()).delete();
     }
 
+    public static void likeFeedPost(String uid, Post data) {
+        database.collection(USER_PATH).document(uid).collection(FEED_PATH).document(data.getId())
+                .update("isLiked", data.isLiked());
 
+        if (uid.equals(data.getUid()))
+            database.collection(USER_PATH).document(uid).collection(POST_PATH).document(data.getId())
+                    .update("isLiked", data.isLiked());
+    }
+
+    public static void loadLikedFeeds(String uid, DBPostsHandler handler) {
+        ArrayList<Post> posts = new ArrayList<>();
+        Query reference;
+        reference = database.collection(USER_PATH).document(uid).collection(FEED_PATH)
+                .whereEqualTo("isLiked", true);
+        reference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String id = document.getString("id");
+                    String caption = document.getString("caption");
+                    String postImg = document.getString("postImg");
+                    String fullname = document.getString("fullname");
+                    String userImg = document.getString("userImg");
+                    String currentDate = document.getString("currentDate");
+                    Boolean isLiked = document.getBoolean("isLiked");
+                    if (isLiked == null) isLiked = false;
+                    String userId = document.getString("uid");
+
+                    Post post = new Post(id, caption, postImg);
+                    post.setUid(userId);
+                    post.setFullname(fullname);
+                    post.setUserImg(userImg);
+                    post.setCurrentDate(currentDate);
+                    post.setLiked(isLiked);
+                    posts.add(post);
+                }
+                handler.onSuccess(posts);
+            } else {
+                handler.onError(task.getException());
+            }
+        });
+
+    }
+
+    public static void deletePost(Post post, DBPostHandler handler) {
+        CollectionReference reference1 = database.collection(USER_PATH).document(post.getUid()).collection(POST_PATH);
+        reference1.document(post.getId()).delete().addOnSuccessListener(unused -> {
+            CollectionReference reference2 = database.collection(USER_PATH).document(post.getUid()).collection(FEED_PATH);
+            reference2.document(post.getId()).delete().addOnSuccessListener(unused1 ->
+                    handler.onSuccess(post)
+            ).addOnFailureListener(handler::onError);
+        }).addOnFailureListener(handler::onError);
+    }
 }
